@@ -1,0 +1,552 @@
+{
+  "name": "AI Lead Qualification & CRM Automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -112
+      ],
+      "id": "b10158ab-a8c2-4377-b082-41337d07002f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this CRM lead.\n\nName:  {{$json.name}}\n\nCompany: {{$json.company}}\n\nEmail: {{$json.email}}\n\nPhone: {{$json.phone}}\n\nService: {{$json.service}}\n\nMessage: {{$json.message}}\n\nReturn ONLY valid JSON in this format:\n\n{\n  \"lead_score\": 9,\n  \"priority\": \"High\",\n  \"summary\": \"Short summary here\"\n}",
+        "options": {
+          "systemMessage": "You are a helpfYou are an AI CRM Assistant.\n\nAnalyze the customer lead.\n\nReturn ONLY valid JSON.\n\n{\n  \"lead_score\": \"\",\n  \"priority\": \"\",\n  \"summary\": \"\"\n}\n\nLead Details:\n\nName: {{ $json.name }}\n\nCompany: {{ $json.company }}\n\nService: {{ $json.service }}\n\nMessage: {{ $json.message }}ul assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        80,
+        -112
+      ],
+      "id": "c6028d3c-cbef-414e-8f2a-77bc487a5009",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        32
+      ],
+      "id": "f4982add-199f-427f-a880-b0222305809e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "oXDvzloeOJfWvmKt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ai = JSON.parse($json.output);\n\nreturn [\n  {\n    json: {\n      ...$input.first().json,\n      lead_score: ai.lead_score,\n      priority: ai.priority,\n      summary: ai.summary\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -112
+      ],
+      "id": "a48bdeaf-d3a9-4899-9ee9-f1c27a585730",
+      "name": "Parse AI Output"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ Number($json.lead_score) }}",
+                    "rightValue": 8,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gt"
+                    },
+                    "id": "86407451-c763-4df7-9db0-99a73c297423"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        144
+      ],
+      "id": "46e8a9fc-1127-4e48-8882-5a47974ab5a3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17T1i23rzJYXFJlKLAZpTnhzsIGNMrhlHPA-YCvHObkk",
+          "mode": "list",
+          "cachedResultName": "CRM LEADS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17T1i23rzJYXFJlKLAZpTnhzsIGNMrhlHPA-YCvHObkk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17T1i23rzJYXFJlKLAZpTnhzsIGNMrhlHPA-YCvHObkk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "A",
+              "displayName": "A",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "B",
+              "displayName": "B",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "C",
+              "displayName": "C",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "D",
+              "displayName": "D",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "E",
+              "displayName": "E",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "F",
+              "displayName": "F",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "G",
+              "displayName": "G",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "H",
+              "displayName": "H",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service",
+              "displayName": "service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lead_score",
+              "displayName": "lead_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        656,
+        128
+      ],
+      "id": "8d84b095-c1b8-45e6-836c-35aa9aead134",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kveFGsuMBQvCb4KR",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ffaf3da-697d-412e-b495-9907090d93fe",
+              "name": "name",
+              "value": "={{$node[\"Lead Input\"].json.name}}",
+              "type": "string"
+            },
+            {
+              "id": "11985520-b1ef-472a-aadb-41b5ae4675fd",
+              "name": "email",
+              "value": "={{$node[\"Lead Input\"].json.email}}",
+              "type": "string"
+            },
+            {
+              "id": "c8aebd6c-4e50-4872-8e20-63a88cda9f4c",
+              "name": "company",
+              "value": "={{$node[\"Lead Input\"].json.company}}",
+              "type": "string"
+            },
+            {
+              "id": "590d7b18-8dc9-48c1-90f7-100b61f6cfcd",
+              "name": "phone",
+              "value": "={{$node[\"Lead Input\"].json.phone}}",
+              "type": "string"
+            },
+            {
+              "id": "549c0e8c-3559-416d-b751-45915e425844",
+              "name": "service",
+              "value": "={{$node[\"Lead Input\"].json.service}}",
+              "type": "string"
+            },
+            {
+              "id": "f6042a2a-b58e-49dc-bd23-28a5da91f499",
+              "name": "status",
+              "value": "New Lead",
+              "type": "string"
+            },
+            {
+              "id": "b115e340-e008-499f-8faf-73eaeca08dcc",
+              "name": "lead_score",
+              "value": "={{$json.lead_score}}",
+              "type": "string"
+            },
+            {
+              "id": "e8626218-0182-48d0-a44e-dff120462dbc",
+              "name": "priority",
+              "value": "={{$json.priority}}",
+              "type": "string"
+            },
+            {
+              "id": "89a58e55-36a9-4d58-956b-10550c1e6336",
+              "name": "summary",
+              "value": "={{$json.summary}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        -112
+      ],
+      "id": "061a0e5a-5d46-41ff-9893-95d4c464d799",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "32b38f33-7367-410b-b290-d74b61e08e99",
+              "name": "name",
+              "value": "Alex Jhonson",
+              "type": "string"
+            },
+            {
+              "id": "5623e6a3-627a-43a5-aa3a-4d651a330336",
+              "name": "email",
+              "value": "alexjhonson@gmail.com",
+              "type": "string"
+            },
+            {
+              "id": "a400664d-cb82-4e19-a568-b0d7230e4b94",
+              "name": "company",
+              "value": "TechNova Solutions",
+              "type": "string"
+            },
+            {
+              "id": "55fd8ec5-060c-4f70-97ac-460c46080bbd",
+              "name": "phone",
+              "value": "+1-555-123-4567",
+              "type": "string"
+            },
+            {
+              "id": "5c2815de-0945-43ba-8b89-3321f50d1745",
+              "name": "service",
+              "value": "CRM Automation",
+              "type": "string"
+            },
+            {
+              "id": "10d772d9-d81c-4864-91cd-9d8478b7ff10",
+              "name": "message",
+              "value": "We receive more than 100 leads daily and need AI automation.",
+              "type": "string"
+            },
+            {
+              "id": "42fa8286-1043-4672-8854-c52564e4a48d",
+              "name": "date",
+              "value": "={{$now}}",
+              "type": "string"
+            },
+            {
+              "id": "8e2f8d09-6647-4ec3-b512-962391a5cf70",
+              "name": "={{$json.lead_score}}S",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -144,
+        -112
+      ],
+      "id": "e11f11b4-7a58-4be6-834f-9528bd51ff54",
+      "name": "Lead Input"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Lead Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Output": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Lead Input": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "cc8c01da-526c-4da5-8db3-06694801cc51",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d76005a6c7ebd9e452262611aaf324f6a314cd9a2df3ef710ffb813a74ac4f4"
+  },
+  "nodeGroups": [],
+  "id": "bqCXSPSqW5TfOskY",
+  "tags": []
+}
