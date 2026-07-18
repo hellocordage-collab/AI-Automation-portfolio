@@ -232,7 +232,7 @@ Building AI-powered workflow automation solutions using n8n and Generative AI.
 
 ## 📊 Google Sheets Output
 
-![Google Sheets](screenshots/google-sheet.png.png)
+![Google Sheets](screenshots/google sheets.png.png)
 
 ---
 
