@@ -224,6 +224,15 @@ _Add a screenshot of your Google Sheets CRM here._
 AI Automation Developer
 
 Building AI-powered workflow automation solutions using n8n and Generative AI.
+## 📸 Workflow
+
+![Workflow](screenshots/workflow.png.png)
+
+---
+
+## 📊 Google Sheets Output
+
+![Google Sheets](screenshots/google-sheet.png.png)
 
 ---
 
