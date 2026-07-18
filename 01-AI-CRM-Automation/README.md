@@ -1,4 +1,3 @@
-<img width="1912" height="912" alt="workflow png" src="https://github.com/user-attachments/assets/f52b1dc7-5fa3-405c-8b75-4918ac47eef8" />
 # 🤖 AI CRM Lead Management using n8n & Google Gemini
 
 An AI-powered CRM automation workflow built using **n8n**, **Google Gemini AI**, and **Google Sheets**. The workflow automatically analyzes incoming leads, assigns an AI-generated lead score, classifies the lead priority, and stores qualified leads in a Google Sheets CRM.
